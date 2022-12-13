@@ -486,11 +486,15 @@ resource "aws_iam_role" "workers" {
   tags = var.tags
 }
 
+variable worker_iam_name_prefix {
+  default = 1
+}
+
 resource "aws_iam_instance_profile" "workers" {
   count = var.manage_worker_iam_resources && var.create_eks ? local.worker_group_launch_configuration_count : 0
 
   #name_prefix = local.cluster_name
-  name_prefix = local.eks_worker_iam_prefix
+  name_prefix = var.worker_iam_name_prefix
   role = lookup(
     var.worker_groups[count.index],
     "iam_role_id",
